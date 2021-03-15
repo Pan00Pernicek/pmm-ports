@@ -3,9 +3,11 @@ Ports like wrapper for Bedrock Linux's package manager manager (wip)
 
 # usage:
 
+`pmmfs` script needs to be in $PATH, otherwise Makefile wont work
+
 location of ports directory is defined by $location inside script, change it, defaults are unusable
 
-then cd to directory above $location and run `pmmfs make` to generate makefile that will be used
+then cd to directory above $location and run `pmmfs make` to generate Makefile that will be used
 
 then run `pmmfs fetch` and wait, it will take long time because i am lazy to optimize/write it in language thats faster than sh
 
