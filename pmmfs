@@ -1,0 +1,62 @@
+#!/bin/sh
+libpm="/bedrock/libexec/pmm pacman pmm"
+location="/home/darek/dev/ports"
+if [ ! -d $location ]; then
+	echo error selected location does not exist: $location
+	exit 1
+fi
+fetch() {
+	cd $(dirname $location)
+	b=0
+	for a in $($libpm -Sl)
+	do
+		pm=$(echo $a | cut -d":" -f2)
+		stratum=$(echo $a | cut -d":" -f1)
+		if [ -f /bedrock/share/pmm/package_managers/$pm ]; then
+			if [ ! $pm = $stratum ]; then
+				if [ ! -d $location/$pm ]; then
+					mkdir $location/$pm
+				fi
+				if [ ! -d $location/$pm/$stratum ]; then
+					mkdir $location/$pm/$stratum
+				fi
+				dir="$location/$pm/$stratum"
+			fi
+		else
+			b=$(( b + 1 ))
+			echo $b: $a: $dir
+			mkdir $dir/$a
+			cp Makefile $dir/$a/Makefile
+		fi
+	done
+}
+install() {
+	dir=$(dirname $PWD)
+	pkg=$(basename $PWD)
+	stratum=$(basename $dir)
+	pm=$(basename $(dirname $dir))
+	$libpm -S $pkg --strat $stratum --pm $pm	
+}
+uninstall() {
+	dir=$(dirname $PWD)
+	pkg=$(basename $PWD)
+	stratum=$(basename $dir)
+	pm=$(basename $(dirname $dir))
+	$libpm -R $pkg --strat $stratum --pm $pm
+}
+show() {
+	dir=$(dirname $PWD)
+	pkg=$(basename $PWD)
+	stratum=$(basename $dir)
+	pm=$(basename $(dirname $dir))
+	$libpm -Si $pkg --strat $stratum --pm $pm
+}
+make() {
+	echo "show:
+	pmmfs show	
+install:
+	pmmfs install
+uninstall:
+	pmmfs uninstall" >> Makefile
+}
+$@
