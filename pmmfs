@@ -1,7 +1,10 @@
 #!/bin/sh
 libpm="/bedrock/libexec/pmm pacman pmm"
-location="/home/darek/dev/ports"
-if [ ! -d $location ]; then
+location=""
+if [ -z $location ]; then
+	echo error undefined location
+	exit 1
+elif [ ! -d $location ]; then
 	echo error selected location does not exist: $location
 	exit 1
 fi
